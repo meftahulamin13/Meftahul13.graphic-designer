@@ -16,7 +16,7 @@ if (navToggle) {
 
 // Scroll reveal
 const revealTargets = document.querySelectorAll(
-  '.about-grid, .chip-row, .gallery-item, .contact-grid, .section-heading, .section-label, .services-grid, .hero-statement'
+  '.about-grid, .chip-row, .gallery-item, .contact-grid, .section-heading, .section-label, .services-grid, .hero-statement, .why-grid, .rating-strip, .testimonial-grid, .cta-content'
 );
 revealTargets.forEach(el => el.classList.add('reveal'));
 
