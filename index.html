@@ -365,7 +365,45 @@
         <span class="testimonial-role">Small Business Owner</span>
       </div>
     </div>
+
+    <div class="testimonial-grid live-testimonial-grid" id="liveTestimonials"></div>
+
     <p class="testimonial-note">* Placeholder testimonials for demonstration — replace with real client reviews once available.</p>
+
+    <div class="review-submit">
+      <h3 class="review-submit-heading">Worked with me? Leave a Review</h3>
+      <p class="review-submit-text">Your review will be sent to me directly — I'll review it and add great ones to this page.</p>
+      <form class="review-form" action="https://formspree.io/f/mvzelbjk" method="POST">
+        <div class="form-row">
+          <div class="form-field">
+            <label for="rev-name">Your Name</label>
+            <input type="text" id="rev-name" name="name" required>
+          </div>
+          <div class="form-field">
+            <label for="rev-role">Your Role / Company</label>
+            <input type="text" id="rev-role" name="role" placeholder="e.g. Startup Founder">
+          </div>
+        </div>
+        <div class="form-field">
+          <label for="rev-rating">Rating</label>
+          <select id="rev-rating" name="rating">
+            <option value="5 stars">★★★★★ (5)</option>
+            <option value="4 stars">★★★★ (4)</option>
+            <option value="3 stars">★★★ (3)</option>
+            <option value="2 stars">★★ (2)</option>
+            <option value="1 star">★ (1)</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label for="rev-text">Your Review</label>
+          <textarea id="rev-text" name="review" rows="4" required placeholder="Share your experience working with me..."></textarea>
+        </div>
+        <input type="hidden" name="_subject" value="New client review submitted — Meftahul Amin site">
+        <input type="text" name="_gotcha" style="display:none">
+        <button type="submit" class="btn-gold form-submit review-submit-btn">Submit Review</button>
+        <p class="form-status" id="reviewStatus" aria-live="polite"></p>
+      </form>
+    </div>
   </section>
 
   <!-- CTA -->
@@ -454,7 +492,7 @@
         <span class="contact-label">Telegram</span>
         <span class="contact-value">@mefmmmm</span>
       </a>
-      <a class="contact-card" href="https://www.fiverr.com/users/amin_graphics3/seller_dashboard" target="_blank" rel="noopener">
+      <a class="contact-card" href="https://www.fiverr.com/amin_graphics3" target="_blank" rel="noopener">
         <span class="contact-label">Fiverr</span>
         <span class="contact-value">amin_graphics3</span>
       </a>
@@ -484,11 +522,21 @@
 
 </main>
 
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</button>
+  <img src="" alt="" class="lightbox-img" id="lightboxImg">
+  <p class="lightbox-caption" id="lightboxCaption"></p>
+</div>
+
 <footer class="footer">
   <div class="footer-mark">MF</div>
   <p>&copy; <span id="year"></span> Meftahul Amin. All rights reserved.</p>
 </footer>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
