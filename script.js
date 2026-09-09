@@ -16,7 +16,7 @@ if (navToggle) {
 
 // Scroll reveal
 const revealTargets = document.querySelectorAll(
-  '.about-grid, .chip-row, .gallery-item, .contact-grid, .section-heading, .section-label, .services-grid, .hero-statement, .why-grid, .rating-strip, .testimonial-grid, .cta-content'
+  '.about-grid, .chip-row, .gallery-item, .contact-grid, .section-heading, .section-label, .services-grid, .hero-statement, .why-grid, .rating-strip, .testimonial-grid, .cta-content, .process-grid, .pricing-grid, .faq-list'
 );
 revealTargets.forEach(el => el.classList.add('reveal'));
 
@@ -169,12 +169,18 @@ if (reviewForm && typeof db !== 'undefined') {
   if (liveContainer) {
     db.collection('reviews')
       .where('approved', '==', true)
-      .orderBy('timestamp', 'desc')
-      .limit(20)
       .onSnapshot((snapshot) => {
+        const docs = [];
+        snapshot.forEach((doc) => docs.push(doc.data()));
+        // Sort newest-first client-side (avoids needing a Firestore composite index)
+        docs.sort((a, b) => {
+          const ta = a.timestamp && a.timestamp.toMillis ? a.timestamp.toMillis() : 0;
+          const tb = b.timestamp && b.timestamp.toMillis ? b.timestamp.toMillis() : 0;
+          return tb - ta;
+        });
+
         liveContainer.innerHTML = '';
-        snapshot.forEach((doc) => {
-          const data = doc.data();
+        docs.slice(0, 20).forEach((data) => {
           const card = document.createElement('div');
           card.className = 'testimonial-card';
 
@@ -201,6 +207,8 @@ if (reviewForm && typeof db !== 'undefined') {
           card.appendChild(role);
           liveContainer.appendChild(card);
         });
+      }, (err) => {
+        console.error('Live reviews failed to load:', err);
       });
   }
 }
