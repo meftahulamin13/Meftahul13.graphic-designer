@@ -164,55 +164,43 @@ if (reviewForm && typeof db !== 'undefined') {
     }
   });
 
-  // Real-time listener — approved reviews appear instantly for every visitor, no rebuild needed
-  const liveContainer = document.getElementById('liveTestimonials');
-  if (liveContainer) {
-    db.collection('reviews')
-      .where('approved', '==', true)
-      .onSnapshot((snapshot) => {
-        const docs = [];
-        snapshot.forEach((doc) => docs.push(doc.data()));
-        // Sort newest-first client-side (avoids needing a Firestore composite index)
-        docs.sort((a, b) => {
-          const ta = a.timestamp && a.timestamp.toMillis ? a.timestamp.toMillis() : 0;
-          const tb = b.timestamp && b.timestamp.toMillis ? b.timestamp.toMillis() : 0;
-          return tb - ta;
+  // Real-time listener — counts approved reviews live (Facebook-like counter, no individual cards shown)
+  db.collection('reviews')
+    .where('approved', '==', true)
+    .onSnapshot((snapshot) => {
+      // Update the "Happy Reviews" counter live (46 base + real submitted reviews)
+      const countEl = document.getElementById('reviewCountNumber');
+      if (countEl) countEl.textContent = (46 + snapshot.size) + '+';
+    }, (err) => {
+      console.error('Live review count failed to load:', err);
+    });
+
+  // Quick 5-star button — one click, no name/text needed
+  const quickRateBtn = document.getElementById('quickRateBtn');
+  if (quickRateBtn) {
+    quickRateBtn.addEventListener('click', async () => {
+      quickRateBtn.disabled = true;
+      const originalText = quickRateBtn.textContent;
+      quickRateBtn.textContent = 'Thanks! ✓';
+      try {
+        await db.collection('reviews').add({
+          name: 'Quick Rater',
+          role: '',
+          rating: '5 stars',
+          review: '',
+          quick: true,
+          approved: true,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
         });
-
-        // Update the "Happy Reviews" counter live (46 base + real submitted reviews)
-        const countEl = document.getElementById('reviewCountNumber');
-        if (countEl) countEl.textContent = (46 + docs.length) + '+';
-
-        liveContainer.innerHTML = '';
-        docs.slice(0, 20).forEach((data) => {
-          const card = document.createElement('div');
-          card.className = 'testimonial-card';
-
-          const stars = document.createElement('div');
-          stars.className = 'stars';
-          const starCount = parseInt(data.rating) || 5;
-          stars.textContent = '★'.repeat(starCount) + '☆'.repeat(5 - starCount);
-
-          const text = document.createElement('p');
-          text.className = 'testimonial-text';
-          text.textContent = '"' + data.review + '"';
-
-          const name = document.createElement('span');
-          name.className = 'testimonial-name';
-          name.textContent = data.name;
-
-          const role = document.createElement('span');
-          role.className = 'testimonial-role';
-          role.textContent = data.role || 'Client';
-
-          card.appendChild(stars);
-          card.appendChild(text);
-          card.appendChild(name);
-          card.appendChild(role);
-          liveContainer.appendChild(card);
-        });
-      }, (err) => {
-        console.error('Live reviews failed to load:', err);
-      });
+      } catch (err) {
+        quickRateBtn.textContent = 'Something went wrong';
+      } finally {
+        setTimeout(() => {
+          quickRateBtn.textContent = originalText;
+          quickRateBtn.disabled = false;
+        }, 2500);
+      }
+    });
+  }
   }
 }
