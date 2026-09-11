@@ -214,33 +214,4 @@ if (reviewForm && typeof db !== 'undefined') {
     }, (err) => {
       console.error('Live review stats failed to load:', err);
     });
-
-  // Quick 5-star button — one click, no name/text needed
-  const quickRateBtn = document.getElementById('quickRateBtn');
-  if (quickRateBtn) {
-    quickRateBtn.addEventListener('click', async () => {
-      quickRateBtn.disabled = true;
-      const originalText = quickRateBtn.textContent;
-      quickRateBtn.textContent = 'Thanks! ✓';
-      try {
-        await db.collection('reviews').add({
-          name: 'Quick Rater',
-          role: '',
-          rating: '5 stars',
-          review: '',
-          quick: true,
-          approved: true,
-          timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        });
-      } catch (err) {
-        quickRateBtn.textContent = 'Something went wrong';
-      } finally {
-        setTimeout(() => {
-          quickRateBtn.textContent = originalText;
-          quickRateBtn.disabled = false;
-        }, 2500);
-      }
-    });
-  }
-  }
 }
