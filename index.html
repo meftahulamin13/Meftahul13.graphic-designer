@@ -473,8 +473,7 @@
       <div class="big-stars" id="bigStars">★★★★★</div>
       <p class="big-rating-count"><span id="totalRatingsCount">4</span> Ratings</p>
     </div>
-    <p class="testimonial-disclaimer">Sample testimonials shown below for layout purposes — not yet verified client reviews.</p>
-
+    
     <div class="rating-strip">
       <div class="rating-stat">
         <span class="rating-number" id="reviewCountNumber">46+</span>
@@ -534,14 +533,15 @@
           </div>
         </div>
         <div class="form-field">
-          <label for="rev-rating">Rating</label>
-          <select id="rev-rating" name="rating">
-            <option value="5 stars">★★★★★ (5)</option>
-            <option value="4 stars">★★★★ (4)</option>
-            <option value="3 stars">★★★ (3)</option>
-            <option value="2 stars">★★ (2)</option>
-            <option value="1 star">★ (1)</option>
-          </select>
+          <label>Rating</label>
+          <div class="star-picker" id="starPicker" role="radiogroup" aria-label="Select a rating">
+            <button type="button" class="star-picker-star" data-value="1" aria-label="1 star">★</button>
+            <button type="button" class="star-picker-star" data-value="2" aria-label="2 stars">★</button>
+            <button type="button" class="star-picker-star" data-value="3" aria-label="3 stars">★</button>
+            <button type="button" class="star-picker-star" data-value="4" aria-label="4 stars">★</button>
+            <button type="button" class="star-picker-star" data-value="5" aria-label="5 stars">★</button>
+          </div>
+          <input type="hidden" id="rev-rating" name="rating" value="">
         </div>
         <div class="form-field">
           <label for="rev-text">Your Review</label>

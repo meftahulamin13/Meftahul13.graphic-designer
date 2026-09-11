@@ -121,9 +121,43 @@ const reviewForm = document.querySelector('.review-form');
 if (reviewForm && typeof db !== 'undefined') {
   const reviewStatus = document.getElementById('reviewStatus');
   const reviewBtn = reviewForm.querySelector('.form-submit');
+  const ratingInput = document.getElementById('rev-rating');
+  const starButtons = document.querySelectorAll('.star-picker-star');
+
+  function paintStars(value) {
+    starButtons.forEach((btn) => {
+      const btnVal = parseInt(btn.dataset.value);
+      btn.classList.toggle('is-active', btnVal <= value);
+    });
+  }
+
+  starButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const value = parseInt(btn.dataset.value);
+      ratingInput.value = value + (value === 1 ? ' star' : ' stars');
+      paintStars(value);
+    });
+    btn.addEventListener('mouseenter', () => {
+      paintStars(parseInt(btn.dataset.value));
+    });
+  });
+  const starPicker = document.getElementById('starPicker');
+  if (starPicker) {
+    starPicker.addEventListener('mouseleave', () => {
+      const current = parseInt(ratingInput.value) || 0;
+      paintStars(current);
+    });
+  }
 
   reviewForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+
+    if (!ratingInput.value) {
+      reviewStatus.textContent = 'Please select a star rating.';
+      reviewStatus.className = 'form-status error';
+      return;
+    }
+
     reviewBtn.disabled = true;
     reviewBtn.textContent = 'Sending...';
     reviewStatus.textContent = '';
@@ -131,7 +165,7 @@ if (reviewForm && typeof db !== 'undefined') {
 
     const name = reviewForm.querySelector('#rev-name').value.trim();
     const role = reviewForm.querySelector('#rev-role').value.trim();
-    const rating = reviewForm.querySelector('#rev-rating').value;
+    const rating = ratingInput.value;
     const review = reviewForm.querySelector('#rev-text').value.trim();
 
     try {
@@ -155,6 +189,8 @@ if (reviewForm && typeof db !== 'undefined') {
       reviewStatus.textContent = 'Thank you! Your review is now live on the site.';
       reviewStatus.className = 'form-status success';
       reviewForm.reset();
+      ratingInput.value = '';
+      paintStars(0);
     } catch (err) {
       reviewStatus.textContent = 'Something went wrong — please try again.';
       reviewStatus.className = 'form-status error';
